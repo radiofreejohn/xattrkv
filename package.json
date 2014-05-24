@@ -1,0 +1,9 @@
+{
+  "name": "xattrkv",
+  "version": "0.0.1",
+  "repo": "radiofreejohn/xattrkv",
+  "description": "Key Value store backed by HFS+ extended attributes",
+  "keywords": ["hfs", "db", "key", "value", "store"],
+  "src": ["xattrkv.h", "xattrkv.c", "xattrkvtool.c"]
+}
+
