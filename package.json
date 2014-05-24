@@ -4,6 +4,7 @@
   "repo": "radiofreejohn/xattrkv",
   "description": "Key Value store backed by HFS+ extended attributes",
   "keywords": ["hfs", "db", "key", "value", "store"],
+  "license": "MIT",
   "src": ["xattrkv.h", "xattrkv.c", "xattrkvtool.c"]
 }
 
