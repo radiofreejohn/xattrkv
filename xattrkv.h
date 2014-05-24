@@ -1,5 +1,6 @@
 #ifndef _XATTRKV
 #define _XATTRKV
+#include <stddef.h>
 
 int   xattrkv_new(char *dbname);
 int   xattrkv_open(char *dbname);
