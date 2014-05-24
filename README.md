@@ -10,6 +10,10 @@ Example usage can be seen in test.c
 ```
 Creates a new empty file.
 ```
+  xattrkv_set(db, "key", "some long string");
+```
+Sets the key "key" to "some long string"
+```
   value = xattrkv_get(db, "keyname");
 ```
 Stores the value (if it exists) of key "keyname" in a string. Caller is responsible for freeing.
