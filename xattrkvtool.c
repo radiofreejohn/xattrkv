@@ -1,10 +1,13 @@
 #include "xattrkv.h"
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 int main(int argc, char* argv[]) {
+    int err;
     int db = xattrkv_open(argv[1]);
+
     if (db == -1) {
         printf("can't open store. create a file with touch\n");
     }
@@ -13,7 +16,10 @@ int main(int argc, char* argv[]) {
             if (argc != 5) {
                 printf("xattrkvtool file set key value\n");
             } else {
-                xattrkv_set(db, argv[3], argv[4]);
+                err = xattrkv_set(db, argv[3], argv[4]);
+                if (err == -1) {
+                    printf("Error: %s\n", strerror(errno));
+                }
             }
         }
         if (strcmp(argv[2], "get") == 0) {
@@ -22,7 +28,7 @@ int main(int argc, char* argv[]) {
             } else {
                 char *value = xattrkv_get(db, argv[3]);
                 if (value == NULL) {
-                    printf("Error: key not found\n");
+                   printf("Error: %s\n", strerror(errno));
                 } else {
                     printf("%s\n", value);
                 }
@@ -33,7 +39,10 @@ int main(int argc, char* argv[]) {
             if (argc != 4) {
                 printf("xattrkvtool file del key\n");
             } else {
-                xattrkv_del(db, argv[3]);
+                err = xattrkv_del(db, argv[3]);
+                if (err == -1) {
+                    printf("Error: %s\n", strerror(errno));
+                }
             }
         }
         if (strcmp(argv[2], "keys") == 0) {
