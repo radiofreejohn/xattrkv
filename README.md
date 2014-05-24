@@ -34,6 +34,8 @@ If you do a directory listing in a directory where you stored lots of keys, it w
 
 Copying the file off the system won't also copy the extended attribute data.
 
+Keys are limited to 127 characters, more than that will silently fail, this former is an OS limitation the later is my fault.
+
 xattrkvtool
 ===========
 compile with:
