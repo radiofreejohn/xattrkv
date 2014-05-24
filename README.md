@@ -48,7 +48,7 @@ create a datastore by touching a file
 
 set keys
 ```
-# xattrkvtool dbstore set awesome "the file is zero size, so you can store an infinite amount of data probably!"
+# xattrkvtool dbstore set awesome "the file is zero size, so you can store an infinite amount of data probably"
 ```
 
 list keys
@@ -61,7 +61,7 @@ awesome
 get values
 ```
 # xattrkvtool dbstore get awesome
-the file is zero size, so you can store an infinite amount of data probably!
+the file is zero size, so you can store an infinite amount of data probably
 ```
 
 delete keys
