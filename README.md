@@ -33,3 +33,38 @@ If you create a store, then delete it, Mac OS seems to remember key names for th
 If you do a directory listing in a directory where you stored lots of keys, it will take a long time.
 
 Copying the file off the system won't also copy the extended attribute data.
+
+xattrkvtool
+===========
+compile with:
+```
+gcc xattrkvtool.c xattrkv.c -o xattrkvtool
+```
+
+create a datastore by touching a file
+```
+# touch dbstore 
+```
+
+set keys
+```
+# xattrkvtool dbstore set awesome "the file is zero size, so you can store an infinite amount of data probably!"
+```
+
+list keys
+```
+# xattrkvtool dbstore keys
+awesome
+#
+```
+
+get values
+```
+# xattrkvtool dbstore get awesome
+the file is zero size, so you can store an infinite amount of data probably!
+```
+
+delete keys
+```
+# xattrkvtool dbstore del awesome
+```
