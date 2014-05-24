@@ -30,4 +30,6 @@ Individual values can be up to almost 2 gigabytes, but I haven't tried that, nor
 
 If you create a store, then delete it, Mac OS seems to remember key names for that file (maybe not forever?) but doesn't keep any values.
 
+If you do a directory listing in a directory where you stored lots of keys, it will take a long time.
+
 Copying the file off the system won't also copy the extended attribute data.
