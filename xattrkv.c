@@ -38,6 +38,8 @@ int xattrkv_new(char *dbname) {
 }
 
 // 0 on success -1 on failure
+// keys longer than 127 characters cause an error (EPERM, but should be ENAMETOOLONG), appears
+// to be a bug in the xnu kernel source for the fsetxattr system call.
 // value must be less than about 2 gigabytes
 int xattrkv_set(int db, char *key, char *value) {
     int retval;
