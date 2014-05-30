@@ -1,7 +1,7 @@
 xattrkv
 =======
 
-A key value store backed by Mac OS's HFS+ extended attributes
+A key value store backed by Mac OS's HFS+ extended attributes, which are stored in a B-tree.
 
 Example usage can be seen in test.c
 
