@@ -5,11 +5,18 @@
 #include <string.h>
 
 int main(int argc, char* argv[]) {
+    if (argc < 3) {
+        printf("Usage: xattrkvtool <file> <command> [args]\n");
+        printf("Commands: set, get, del, keys\n");
+        return 1;
+    }
+
     int err;
     int db = xattrkv_open(argv[1]);
 
     if (db == -1) {
         printf("can't open store. create a file with touch\n");
+        return 1;
     }
     if (argc > 2) {
         if (strcmp(argv[2], "set") == 0) {
@@ -48,13 +55,17 @@ int main(int argc, char* argv[]) {
         if (strcmp(argv[2], "keys") == 0) {
             char **keys;
             size_t nkeys;
-            xattrkv_keys(db, &keys, &nkeys);
-            for (int i = 0; i < nkeys; i++) {
-                printf("%s\n", keys[i]);
-                free(keys[i]);
+            if (xattrkv_keys(db, &keys, &nkeys) == -1) {
+                printf("Error: %s\n", strerror(errno));
+            } else {
+                for (size_t i = 0; i < nkeys; i++) {
+                    printf("%s\n", keys[i]);
+                    free(keys[i]);
+                }
+                free(keys);
             }
-            free(keys);
         }
     }
-    return 0; 
+    xattrkv_close(db);
+    return 0;
 }

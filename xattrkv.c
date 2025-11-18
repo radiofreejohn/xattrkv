@@ -6,8 +6,6 @@
 #include <fcntl.h>
 // for fpathconf
 #include <unistd.h>
-// for pow
-#include <math.h>
 // for mode on files
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -38,8 +36,7 @@ int xattrkv_new(char *dbname) {
 }
 
 // 0 on success -1 on failure
-// keys longer than 127 characters cause an error (EPERM, but should be ENAMETOOLONG), appears
-// to be a bug in the xnu kernel source for the fsetxattr system call.
+// keys longer than 127 characters on macOS (255 on Linux) will fail with ENAMETOOLONG
 // value must be less than about 2 gigabytes
 int xattrkv_set(int db, char *key, char *value) {
     int retval;
@@ -48,9 +45,14 @@ int xattrkv_set(int db, char *key, char *value) {
 }
 
 char *xattrkv_get(int db, char *key) {
-    size_t size;
-    size = (size_t) fgetxattr(db, key, NULL, 0, 0, 0);
+    ssize_t size = fgetxattr(db, key, NULL, 0, 0, 0);
+    if (size == -1) {
+        return NULL;
+    }
     char *value = malloc(size + 1);
+    if (value == NULL) {
+        return NULL;
+    }
     ssize_t ok = fgetxattr(db, key, value, size, 0, 0);
     if (ok == -1) {
         free(value);
@@ -71,30 +73,61 @@ int xattrkv_close(int db) {
 }
 
 // list all keys, caller responsible for freeing
-void xattrkv_keys(int db, char ***keys, size_t *nkeys) {
+// returns 0 on success, -1 on failure
+int xattrkv_keys(int db, char ***keys, size_t *nkeys) {
     // flistxattr gives a buffer of null terminated strings
 
     // find out how much space to allocate
-    size_t size = (size_t) flistxattr(db, NULL, 0, 0);
+    ssize_t size = flistxattr(db, NULL, 0, 0);
+    if (size == -1) {
+        *nkeys = 0;
+        *keys = NULL;
+        return -1;
+    }
+
+    // handle empty case
+    if (size == 0) {
+        *nkeys = 0;
+        *keys = NULL;
+        return 0;
+    }
+
     char *buffer = malloc(size);
-    flistxattr(db, buffer, size, 0);
+    if (buffer == NULL) {
+        *nkeys = 0;
+        *keys = NULL;
+        return -1;
+    }
+
+    if (flistxattr(db, buffer, size, 0) == -1) {
+        free(buffer);
+        *nkeys = 0;
+        *keys = NULL;
+        return -1;
+    }
 
     size_t keycount = 0;
-    
-    for (int i = 0; i < size; i++) {
+
+    for (ssize_t i = 0; i < size; i++) {
         if (buffer[i] == '\0') {
             keycount++;
         }
     }
     *nkeys = keycount;
     *keys = malloc(sizeof(char*) * keycount);
+    if (*keys == NULL) {
+        free(buffer);
+        *nkeys = 0;
+        return -1;
+    }
 
     size_t index = 0;
     size_t bufpos = 0;
-    // this is probably insane
     while (index != keycount) {
-        *(*keys + index) = strdup(buffer+bufpos);
-        bufpos = bufpos + strlen(*(*keys+index)) + 1;
+        (*keys)[index] = strdup(buffer + bufpos);
+        bufpos = bufpos + strlen((*keys)[index]) + 1;
         index = index + 1;
     }
+    free(buffer);
+    return 0;
 }

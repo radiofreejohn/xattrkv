@@ -20,11 +20,14 @@ int main(int argc, char* argv[]) {
     }
     char **keys;
     size_t nkeys;
-    xattrkv_keys(db, &keys, &nkeys);
-    printf("nkeys: %ld\n", nkeys);
-    for (int i = 0; i < nkeys; i++) {
-        printf("key: %s\n", keys[i]);
+    if (xattrkv_keys(db, &keys, &nkeys) == 0) {
+        printf("nkeys: %zu\n", nkeys);
+        for (size_t i = 0; i < nkeys; i++) {
+            printf("key: %s\n", keys[i]);
+            free(keys[i]);
+        }
+        free(keys);
     }
-    close(db);
+    xattrkv_close(db);
     return 0;
 }

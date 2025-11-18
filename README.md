@@ -34,7 +34,7 @@ If you do a directory listing in a directory where you stored lots of keys, it w
 
 Copying the file off the system won't also copy the extended attribute data.
 
-Keys are limited by Mac OS to 127 characters, more than that will fail with EPERM. (should be ENAMETOOLONG according to the man page, but we get EPERM from the OS)
+Keys are limited by macOS to 127 characters (255 on most Linux filesystems). Exceeding this limit will fail with ENAMETOOLONG.
 
 xattrkvtool
 ===========
